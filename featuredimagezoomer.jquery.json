@@ -1,0 +1,25 @@
+{
+  "name": "featuredimagezoomer",
+  "title": "Featured Image Zoomer",
+  "description": " This script lets you view a magnified portion of any image upon moving your mouse over it. A magnifying area appears alongside the image displaying the magnified image on demand. The user can toggle the zoom level by using the mousewheel.  It's great to use on product images, photos, or other images with lots of details you want users to be able to get into on command.",
+  "keywords": ["thumbnails", "image", "gallery", "magnify", "zoom"],
+  "version": "2.1.0",
+  "author": {
+    "name": "Dynamic Drive",
+    "email" : "ddrivehelp@gmail.com",
+		"url": "http://www.dynamicdrive.com"
+  },
+  "licenses": [
+    {
+      "type": "Freeware",
+      "url": "http://www.dynamicdrive.com/notice.htm"
+    }
+  ],
+  "dependencies": {
+    "jquery": ">=1.7"
+  },
+  "homepage": "http://www.dynamicdrive.com/dynamicindex4/featuredzoomer.htm",
+  "docs": "http://www.dynamicdrive.com/dynamicindex4/featuredzoomer.htm",
+  "demo": "http://www.dynamicdrive.com/dynamicindex4/featuredzoomer.htm",
+  "download": "http://www.dynamicdrive.com/dynamicindex4/featuredzoomer.htm"
+}
