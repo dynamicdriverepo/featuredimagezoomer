@@ -5,7 +5,7 @@
 // requires: a modified version of Dynamic Drive's Featured Image Zoomer (w/ adjustable power) (included)
 
 /*Featured Image Zoomer (May 8th, 2010)
-* This notice must stay intact for usage 
+* This notice must stay intact for usage
 * Author: Dynamic Drive at http://www.dynamicdrive.com/
 * Visit http://www.dynamicdrive.com/ for full source code
 */
@@ -17,23 +17,21 @@
 // Nov 28th, 2012: Version 2.1 w/Multi Zoom, updates - new features and bug fixes
 
 var featuredimagezoomer = { // the two options for Featured Image Zoomer:
-	loadinggif: 'spinningred.gif', // full path or URL to "loading" gif
 	magnifycursor: 'crosshair' // value for CSS's 'cursor' property when over the zoomable image
 };
 
 	//////////////// No Need To Edit Beyond Here ////////////////
 
-jQuery.noConflict();
 
 (function($){
 
 	$('head').append('<style type="text/css">.featuredimagezoomerhidden {visibility: hidden!important;}</style>');
 
-	$.fn.multizoomhide = function(){
-		return $('<style type="text/css">' + this.selector + ' {visibility: hidden;}<\/style>').appendTo('head');
+	$.fn.multizoomhide = function(selector){
+		return $('<style type="text/css">' + selector + ' {visibility: hidden;}<\/style>').appendTo('head');
 	};
 
-	$.fn.addmultizoom = function(options){
+	$.fn.addmultizoom = function(selector, options){
 
 		var indoptions = {largeimage: options.largeimage}, $imgObj = $(options.imgObj + ':not(".thumbs")'),
 		$descArea = $(options.descArea), first = true, splitre = /, ?/;
@@ -50,7 +48,7 @@ jQuery.noConflict();
 				lnkd = lnkd.split(splitre);
 				w = lnkd[0]; h = lnkd[1];
 			}
-			$(new Image()).error(function(){
+			$(new Image()).on('error', function(){
 				if(lnk.tagName && !options.notmulti){
 					alert("Error: I couldn't find the image:\n\n" + lnk.href + ((lnkt = lnk.getAttribute('data-title'))? '\n\n"' + lnkt + '"' : ''));
 					if((lnko = $imgObj.data('last-trigger'))){
@@ -58,7 +56,7 @@ jQuery.noConflict();
 						$(lnko).trigger('click');
 					}
 				}
-			}).load(function(){
+			}).on('load', function(){
 				var opacity = $imgObj.css('opacity'), combinedoptions = {}, $parent;
 				if(isNaN(opacity)){opacity = 1;}
 				if(options.notmulti || !indoptions.largeimage){
@@ -68,7 +66,7 @@ jQuery.noConflict();
 				if($imgObj.data('added')) {$imgObj.data('added').remove()};
 				$imgObj.data('last-trigger', lnk);
 				if(options.imagevertcenter){styleobj1 = {top: ($imgObj.parent().innerHeight() - h) / 2};}
-				$imgObj.css(styleobj1).addimagezoom($.extend(combinedoptions, options, indoptions))
+				$imgObj.css(styleobj1).addimagezoom(selector, $.extend(combinedoptions, options, indoptions))
 					.data('added', $('.magnifyarea:last' + (combinedoptions.cursorshade? ', .cursorshade:last' : '') + ', .zoomstatus:last, .zoomtracker:last'));
 				if(options.magvertcenter){
 					$('.magnifyarea:last').css({marginTop: (h - $('.magnifyarea:last').height()) / 2});
@@ -103,7 +101,7 @@ jQuery.noConflict();
 			if(cs){indoptions.cursorshade = eval(cs);}
 			$imgObj.data('added') &&
 				$imgObj.stop(true, true).data('added').not('.zoomtracker').remove().end()
-					.css({background: 'url(' + featuredimagezoomer.loadinggif + ') center no-repeat'});
+					 .css({background: 'url(' + featuredimagezoomer.loadinggif + ') center no-repeat'});
 			$imgObj.css($.extend({visibility: 'visible'}, ($imgObj.data('added')? options.zoomablefade? {opacity: 0.25} : opacityObj : opacityObj))).data('src', this.href);
 			$descArea.css($.extend({visibility: 'visible'}, opacityObj));
 			loadfunction.call(this);
@@ -204,7 +202,7 @@ jQuery.noConflict();
 			var nd=[od.w*newpower, od.h*newpower] //calculate dimensions of new enlarged image within magnifier
 			magnifier.$image.css({width:nd[0], height:nd[1]})
 			specs.curpower=newpower //set current power to new power after magnification
-			specs.$statusdiv.html('Current Zoom: '+specs.curpower)
+			specs.$statusdiv.html('Current zoom : '+specs.curpower)
 			this.showstatusdiv(specs, 0, 500)
 			$tracker.trigger('mousemove')
 		},
@@ -219,13 +217,13 @@ jQuery.noConflict();
 			return z;
 		},
 
-		init: function($img, options){
+		init: function(selector, $img, options){
 			var setting=$.extend({}, this.dsetting, options), w = $img.width(), h = $img.height(), o = $img.offset(),
 			fiz = this, $tracker, $cursorshade, $statusdiv, $magnifier, lastpage = {pageX: 0, pageY: 0},
 			basezindex = setting.zIndex || this.highestzindex($img);
 			if(h === 0 || w === 0){
-				$(new Image()).load(function(){
-					featuredimagezoomer.init($img, options);
+				$(new Image()).on('load', function(){
+					featuredimagezoomer.init(selector, $img, options);
 				}).attr('src', $img.attr('src'));
 				return;
 			}
@@ -239,11 +237,11 @@ jQuery.noConflict();
 				$cursorshade = $('<div class="cursorshade" style="visibility:hidden;position:absolute;left:0;top:0;z-index:'+basezindex+';" />')
 					.css({border: setting.cursorshadeborder, opacity: setting.cursorshadeopacity, backgroundColor: setting.cursorshadecolor})
 					.appendTo(document.body);
-			} else { 
+			} else {
 				$cursorshade = $('<div />'); //dummy shade div to satisfy $tracker.data('specs')
 			}
 			$statusdiv = $('<div class="zoomstatus preloadevt" style="position:absolute;visibility:hidden;left:0;top:0;z-index:'+basezindex+';" />')
-				.html('<img src="'+this.loadinggif+'" />')
+				 .html('<img src="'+this.loadinggif+'" />')
 				.appendTo(document.body); //create DIV to show "loading" gif/ "Current Zoom" info
 			$tracker = $('<div class="zoomtracker" style="cursor:progress;position:absolute;z-index:'+basezindex+';left:'+o.left+'px;top:'+o.top+'px;height:'+h+'px;width:'+w+'px;" />')
 				.css({backgroundImage: (this.isie? 'url(cannotbe)' : 'none')})
@@ -291,6 +289,7 @@ jQuery.noConflict();
 					lastpage.pageX = e.pageX;
 					lastpage.pageY = e.pageY;
 				});
+
 
 			$tracker.one('mouseover', function(e){
 				var $maginner=$magnifier.find('div:eq(0)')
@@ -364,26 +363,26 @@ jQuery.noConflict();
 		hashre: /^#/
 	});
 
-	$.fn.addimagezoom = function(options){
-		var sel = this.selector, $thumbs = $(sel.replace(featuredimagezoomer.hashre, '.') + '.thumbs a');
+	$.fn.addimagezoom = function(selector, options){
+		var sel = selector, $thumbs = $(sel.replace(featuredimagezoomer.hashre, '.') + '.thumbs a');
 		options = options || {};
-		if(options.multizoom !== null && ($thumbs).size()){
-			$thumbs.addmultizoom($.extend(options, {imgObj: sel, multizoom: null}));
+		if(options.multizoom !== null && ($thumbs).length){
+			$thumbs.addmultizoom(selector, $.extend(options, {imgObj: sel, multizoom: null}));
 			return this;
 		} else if(options.multizoom){
-			$(options.multizoom).addmultizoom($.extend(options, {imgObj: sel, multizoom: null}));
+			$(options.multizoom).addmultizoom(selector, $.extend(options, {imgObj: sel, multizoom: null}));
 			return this;
 		} else if (options.multizoom !== null){
 			return this.each(function(){
 				if (this.tagName !== featuredimagezoomer.iname)
 					return true; //skip to next matched element
-				$('<a href="' + this.src + '"></a>').addmultizoom($.extend(options, {imgObj: sel, multizoom: null, notmulti: true}));
+				$('<a href="' + this.src + '"></a>').addmultizoom(selector, $.extend(options, {imgObj: sel, multizoom: null, notmulti: true}));
 			});
 		}
 		return this.each(function(){ //return jQuery obj
 			if (this.tagName !== featuredimagezoomer.iname)
 				return true; //skip to next matched element
-			featuredimagezoomer.init($(this), options);
+			featuredimagezoomer.init(selector, $(this), options);
 		});
 	};
 
